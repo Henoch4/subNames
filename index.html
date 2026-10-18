@@ -1,257 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SubNames — Subdomains on BOT Chain</title>
-<style>
-:root{--bg:#0e0b14;--fg:#f2edf9;--mut:#a79ec2;--line:#261f3a;--card:#161226;--acc:#b794f6;--acc2:#e4d7fe;--onacc:#1d1038;--danger:#ef4444}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-serif;line-height:1.55;min-height:100vh}
-a{color:inherit;text-decoration:none}
-.mono{font-family:'Courier New',monospace}
-.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
-nav{border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;background:rgba(14,11,20,.92);backdrop-filter:blur(8px)}
-.nav-in{display:flex;align-items:center;justify-content:space-between;height:60px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px}
-.logo i{width:26px;height:26px;border-radius:6px;background:var(--acc);color:var(--onacc);display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-style:normal}
-.nav-links{display:flex;align-items:center;gap:18px;font-size:13.5px;color:var(--mut)}
-.btn{font-weight:600;font-size:13.5px;padding:10px 18px;border-radius:8px;border:none;cursor:pointer;min-height:40px}
-.btn-a{background:var(--acc);color:var(--onacc)}
-.btn-a:hover{background:var(--acc2)}
-.btn-g{background:transparent;color:var(--fg);border:1px solid var(--line)}
-.btn-g:hover{border-color:var(--acc)}
-.btn-sm{padding:7px 13px;font-size:12.5px;min-height:34px}
-select#netSel{background:var(--card);border:1px solid var(--line);border-radius:8px;font-size:12px;padding:9px;color:var(--fg)}
-.hero{padding:56px 0 30px}
-.hero h1{font-size:clamp(30px,5vw,52px);font-weight:800;letter-spacing:-.02em}
-.hero h1 span{color:var(--acc)}
-.hero p{color:var(--mut);max-width:640px;margin-top:12px;font-size:16px}
-.ticker{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:8px 0 26px}
-.ticker .cell{padding:16px 24px;display:flex;justify-content:space-between;gap:12px}
-.ticker .cell + .cell{border-left:1px solid var(--line)}
-.ticker .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
-.ticker .v{font-size:15px;font-weight:700;color:var(--acc2)}
-.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start;padding-bottom:48px}
-@media(max-width:860px){.grid{grid-template-columns:1fr}.ticker{grid-template-columns:1fr}.ticker .cell + .cell{border-left:none;border-top:1px solid var(--line)}}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:18px;overflow:hidden}
-.panel-head{padding:14px 18px;border-bottom:1px solid var(--line);font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
-.row{display:grid;grid-template-columns:130px 1fr auto;gap:12px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line)}
-.row:last-child{border-bottom:none}
-.row label{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
-.row input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--fg);font-size:14px;padding:10px 12px;min-height:42px;font-family:'Inter',sans-serif}
-.row input.mono{font-family:'Courier New',monospace;font-size:12.5px}
-.kv{display:flex;justify-content:space-between;padding:11px 18px;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--mut);gap:10px}
-.kv:last-child{border-bottom:none}
-.kv b{color:var(--fg);font-weight:600;text-align:right}
-.hint{padding:10px 18px 16px;font-size:12.5px;color:var(--mut)}
-.msg{display:none;padding:8px 18px 14px;font-size:12.5px;color:var(--acc2)}
-.nm{padding:14px 18px;border-bottom:1px solid var(--line);font-size:14px}
-.nm:last-child{border-bottom:none}
-.nm b{font-size:16px}
-.nm .mono{color:var(--acc2);font-size:12px}
-footer{padding:36px 0;border-top:1px solid var(--line);color:var(--mut);font-size:13px}
-footer a{color:var(--acc2)}
-.proof{max-width:440px;margin-top:18px;padding:16px 18px;background:var(--card);border:1px solid var(--line);border-radius:8px}
-.proof-title{font-family:ui-monospace,'Courier New',monospace;font-size:11px;font-weight:600;color:var(--acc);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
-.proof-grid{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-family:ui-monospace,'Courier New',monospace;font-size:12px;color:var(--mut)}
-.proof-grid .val{color:var(--acc);overflow-wrap:anywhere}
-.proof-links{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}
-.proof-link{font-family:ui-monospace,'Courier New',monospace;font-size:11px;color:var(--acc);border-bottom:1px solid var(--acc);text-decoration:none}
-</style>
-</head>
-<body>
-<nav><div class="wrap nav-in">
-<div class="logo"><i>❖</i>SubNames</div>
-<div class="nav-links">
-<select id="netSel"><option value="968" selected>Testnet 968</option><option value="677">Mainnet 677</option></select>
-<button class="btn btn-a" id="connectBtn">Connect wallet</button>
-</div>
-</div></nav>
-
-<div class="wrap">
-<div class="hero">
-<h1>Names under <span>names.</span></h1>
-<p>Claim a parent label for 0.005 BOT, then issue unlimited subnames under it — dev.alice, pay.alice, anything. Transfer parents, revoke subs, resolve on-chain.</p>
-</div>
-
-<div class="ticker">
-<div class="cell"><span class="k">Parents</span><span class="v" id="tParents">—</span></div>
-<div class="cell"><span class="k">Your BOT</span><span class="v" id="tBal">—</span></div>
-<div class="cell"><span class="k">Parent fee</span><span class="v">0.005</span></div>
-</div>
-
-<div class="grid">
-<div>
-<div class="panel">
-<div class="panel-head">Resolve</div>
-<div class="row"><label>sub.parent</label><input id="rSub" class="mono" placeholder="dev.alice"></div>
-<div class="row" style="border-bottom:none;grid-template-columns:1fr auto"><span class="hint" style="padding:0" id="rOut">Enter a name to resolve.</span><button class="btn btn-g btn-sm" id="resolveBtn">Resolve →</button></div>
-</div>
-<div class="panel">
-<div class="panel-head">Parents</div>
-<div id="parList"><div class="hint">Loading…</div></div>
-</div>
-</div>
-
-<div>
-<div class="panel">
-<div class="panel-head">Claim parent (0.005 BOT)</div>
-<div class="row" style="border-bottom:none;grid-template-columns:1fr auto"><input id="cParent" class="mono" placeholder="alice"><button class="btn btn-a btn-sm" id="claimBtn">Claim →</button></div>
-<div class="msg" id="cMsg"></div>
-</div>
-<div class="panel">
-<div class="panel-head">Issue subname (parent owner)</div>
-<div class="row"><label>Parent</label><input id="iParent" class="mono" placeholder="alice"></div>
-<div class="row"><label>Sub</label><input id="iSub" class="mono" placeholder="dev"></div>
-<div class="row" style="border-bottom:none"><label>Holder</label><input id="iHolder" class="mono" placeholder="0x…"></div>
-<div class="row" style="border-bottom:none;grid-template-columns:1fr auto"><span class="hint" style="padding:0">Free, unlimited.</span><button class="btn btn-a btn-sm" id="issueBtn">Issue →</button></div>
-<div class="msg" id="iMsg"></div>
-</div>
-<div class="panel">
-<div class="panel-head">How it works</div>
-<div class="kv"><span>Parents</span><b>first-come, 0.005 fee</b></div>
-<div class="kv"><span>Subs</span><b>free, parent-gated</b></div>
-<div class="kv"><span>Transfer</span><b>parents move, subs follow</b></div>
-<div class="kv"><span>Revoke</span><b>parent owner anytime</b></div>
-<div class="hint">Standalone v1 — BotNames ownership linkage is the upgrade path.</div>
-</div>
-</div>
-</div>
-
-<footer>
-<p>SubNames — subdomains on BOT Chain. dev.alice lives here.</p>
-<div class="proof">
-<div class="proof-title">Proof on BOT Testnet</div>
-<div class="proof-grid">
-<span>Chain ID</span><span class="val">968</span>
-<span>Contract</span><span class="val">0x1AcfE0b24632294DC6947fc0508F8217134a55D7</span>
-</div>
-<div class="proof-links">
-<a href="https://botchain.ai" target="_blank" rel="noopener" class="proof-link">BOT Chain Website &#8599;</a>
-<a href="https://scan.bohr.life/" target="_blank" rel="noopener" class="proof-link">BOTScan Explorer &#8599;</a>
-</div>
-</div>
-</footer>
-</div>
-
-<script type="importmap">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>SubNames — Subdomains on BOT Chain</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"><style>:root{--bg:#04100a;--fg:#c4ffd9;--mut:#6aa883;--line:#14452a;--card:#071a10;--acc:#3dff8a;--acc2:#ffcf4a;--onacc:#04100a}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#04100a;--fg:#c4ffd9;--mut:#6aa883;--line:#14452a;--card:#071a10;--acc:#3dff8a;--acc2:#ffcf4a;--onacc:#04100a}}@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#eaf1e2;--fg:#0b2a14;--mut:#46684f;--line:#b9cfb4;--card:#f6faf1;--acc:#0a6b2e;--acc2:#855400;--onacc:#ffffff}}:root[data-theme="dark"]{--bg:#04100a;--fg:#c4ffd9;--mut:#6aa883;--line:#14452a;--card:#071a10;--acc:#3dff8a;--acc2:#ffcf4a;--onacc:#04100a}:root[data-theme="light"]{--bg:#eaf1e2;--fg:#0b2a14;--mut:#46684f;--line:#b9cfb4;--card:#f6faf1;--acc:#0a6b2e;--acc2:#855400;--onacc:#ffffff}*,*:before,*:after{box-sizing:border-box}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-behavior:smooth;scroll-padding-top:calc(90px + env(safe-area-inset-top,0px))}body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);overflow-x:hidden;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit;color:inherit}.rv{opacity:0;transform:translateY(40px);transition:1s cubic-bezier(.2,.9,.2,1)}.rv.in{opacity:1;transform:none}.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));translate:-50% 220%;background:var(--fg);color:var(--bg);padding:14px 24px;border-radius:99px;z-index:100;transition:translate .5s cubic-bezier(.2,.9,.2,1);font-size:14px;max-width:90vw;text-align:center}.toast.on{translate:-50% 0}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+:root{--disp:'VT323',ui-monospace,monospace;--sans:'Fira Code',ui-monospace,monospace}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 2px,color-mix(in srgb,var(--fg) 5%,transparent) 2px 3px);z-index:90}
+body{font-size:14px}.glow{text-shadow:0 0 10px color-mix(in srgb,var(--acc) 60%,transparent)}
+.bar{display:flex;justify-content:space-between;align-items:center;padding:calc(12px + env(safe-area-inset-top,0px)) clamp(12px,3vw,40px) 12px;border-bottom:1px solid var(--line)}
+.lg{font-family:var(--disp);font-size:30px;color:var(--acc)}.rt{display:flex;gap:10px;align-items:center}.net{display:flex;border:1px solid var(--line)}.net button{all:unset;cursor:pointer;padding:6px 12px;color:var(--mut)}.net .on{background:var(--acc);color:var(--onacc)}
+.cw{all:unset;cursor:pointer;border:1px solid var(--acc);color:var(--acc);padding:6px 14px}.cw:hover{background:var(--acc);color:var(--onacc)}
+main{max-width:1180px;margin:0 auto;padding:clamp(16px,3vw,40px) clamp(12px,3vw,40px);display:grid;gap:22px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.win{border:1px solid var(--acc);border-radius:10px;background:var(--card);box-shadow:0 0 30px color-mix(in srgb,var(--acc) 12%,transparent);overflow:hidden}
+.tb{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);color:var(--mut);font-size:12px}.tb i{width:11px;height:11px;border-radius:50%;background:var(--line);display:block}.tb i:first-child{background:#ff5f56}.tb i:nth-child(2){background:#ffbd2e}.tb i:nth-child(3){background:#27c93f}.tb span{margin-left:auto;margin-right:auto}
+.bd{padding:clamp(16px,2.5vw,32px)}.pr{color:var(--mut);margin:0 0 6px}.pr:before{content:"$ ";color:var(--acc)}
+h1{font-family:var(--disp);font-weight:400;font-size:clamp(56px,10vw,150px);line-height:.85;margin:6px 0 22px;color:var(--acc)}.cur{animation:bk 1s steps(1) infinite}@keyframes bk{50%{opacity:0}}
+.tx{font-size:16px;line-height:1.7;max-width:760px;min-height:84px}.st{display:flex;gap:clamp(20px,5vw,60px);margin-top:20px;flex-wrap:wrap}.st b{font-family:var(--disp);font-weight:400;font-size:48px;color:var(--acc2);line-height:1;display:block}.st span{color:var(--mut)}
+h3{font-family:var(--disp);font-weight:400;font-size:28px;margin:0 0 14px;color:var(--acc)}h3:before{content:"> ";color:var(--acc2)}
+.in{display:flex;gap:8px;margin-bottom:12px}.in input,.in select{all:unset;flex:1;border:1px solid var(--line);padding:10px 12px;background:var(--bg);min-width:0;box-sizing:border-box}.in input:focus{border-color:var(--acc)}.in select{cursor:pointer}
+.go{all:unset;cursor:pointer;background:var(--acc);color:var(--onacc);padding:10px 18px;font-weight:500}.go:hover{filter:brightness(1.15)}
+.out{border-left:3px solid var(--acc2);padding:8px 14px;margin-top:10px;min-height:44px;color:var(--fg)}.mu{color:var(--mut);font-size:12px;margin:8px 0 0}
+.tr{font-size:15px;line-height:2}.tr .pl{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px dashed var(--line);padding-top:6px;margin-top:6px}.tr .nm{color:var(--acc);font-weight:500;font-size:17px}.tr .ow{color:var(--mut)}.tr .sb{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-left:6px}.tr .sb span:first-child{color:var(--fg)}.tr .sb em{font-style:normal;color:var(--mut)}
+.tr button{all:unset;cursor:pointer;border:1px solid var(--line);padding:0 10px;font-size:12px;color:var(--mut);margin-left:6px}.tr button:hover{border-color:var(--acc);color:var(--acc)}
+.man{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}.man b{color:var(--acc2);display:block;margin-bottom:6px;font-size:13px;letter-spacing:.08em;text-transform:uppercase}.man p{margin:0;line-height:1.6}.man span{color:var(--acc);font-family:var(--disp);font-size:26px;display:block;line-height:1.1;margin-bottom:6px}
+footer{max-width:1180px;margin:0 auto;padding:10px clamp(12px,3vw,40px) 40px;color:var(--mut);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;font-size:12px}
+@media(max-width:900px){.g2,.man{grid-template-columns:1fr}.net{display:none}}
+</style></head><body>
+<div class="bar"><a class="lg glow" href="#">❖ SubNames</a><div class="rt"><div class="net"><button class="on">Testnet 968</button><button>Mainnet 677</button></div><button class="cw" id="w">Connect wallet</button></div></div>
+<main>
+<div class="win"><div class="tb"><i></i><i></i><i></i><span>names@bot-chain:~</span></div><div class="bd"><p class="pr">whoami</p><h1 class="glow">Names under names.<span class="cur">█</span></h1><p class="pr">cat README</p><p class="tx" id="rd"></p><div class="st"><div><b id="k1">0</b><span>parents</span></div><div><b id="k2">0</b><span>your BOT</span></div><div><b>0.005</b><span>parent fee</span></div></div></div></div>
+<div class="g2"><div class="win"><div class="tb"><i></i><i></i><i></i><span>resolve</span></div><div class="bd"><h3>Resolve</h3><div class="in"><input id="rs" placeholder="sub.parent" value="dev.alice" spellcheck="false"><button class="go" id="rb">Resolve →</button></div><div class="out" id="ro">Enter a name to resolve.</div></div></div>
+<div class="win"><div class="tb"><i></i><i></i><i></i><span>claim</span></div><div class="bd"><h3>Claim parent (0.005 BOT)</h3><div class="in"><input id="cl" placeholder="yourname" spellcheck="false"><button class="go" id="cb">Claim →</button></div><p class="mu">First come, first served. 1–32 chars, a–z 0–9 and -.</p></div></div></div>
+<div class="win"><div class="tb"><i></i><i></i><i></i><span>parents --tree</span></div><div class="bd"><h3>Parents</h3><div class="tr" id="tr"></div></div></div>
+<div class="win"><div class="tb"><i></i><i></i><i></i><span>issue</span></div><div class="bd"><h3>Issue subname (parent owner)</h3><div class="in"><select id="ip"></select><input id="is" placeholder="sub" spellcheck="false"><input id="ih" placeholder="holder 0x…"><button class="go" id="ib">Issue →</button><button class="go" id="rb2" style="background:var(--acc2);color:var(--onacc)">Revoke →</button></div><p class="mu">Free, unlimited.</p></div></div>
+<div class="win"><div class="tb"><i></i><i></i><i></i><span>man subnames</span></div><div class="bd"><h3>How it works</h3><div class="man"><div><span>Parents</span><b>first-come, 0.005 fee</b><p>Claim a parent label once and it's yours.</p></div><div><span>Subs</span><b>free, parent-gated</b><p>Only the parent owner can issue subnames under it.</p></div><div><span>Transfer</span><b>parents move, subs follow</b><p>Hand over a parent and its subs go with it.</p></div><div><span>Revoke</span><b>parent owner anytime</b><p>Pull back any subname whenever you like.</p></div></div><p class="mu" style="margin-top:20px">Standalone v1. BotNames ownership linkage is the upgrade path.</p></div></div>
+</main><footer><span>SubNames — subdomains on BOT Chain. dev.alice lives here.</span><span>Proof on BOT Testnet · chain 968 · 0x1Acf…55D7 · <a href="https://botchain.ai" target="_blank" rel="noopener" style="color:var(--acc);text-decoration:underline">BOT Chain Website &#8599;</a> · <a href="https://scan.bohr.life/" target="_blank" rel="noopener" style="color:var(--acc);text-decoration:underline">BOTScan &#8599;</a></span></footer>
+<div class="toast" id="toast"></div><script type="importmap">
 {"imports":{"ethers":"https://esm.sh/ethers@6.13.2","@reown/appkit":"https://esm.sh/@reown/appkit@1.8.21","@reown/appkit-adapter-ethers":"https://esm.sh/@reown/appkit-adapter-ethers@1.8.21"}}
 </script>
 <script type="module">
 import { ethers } from 'ethers';
 import { createAppKit } from '@reown/appkit';
 import { EthersAdapter } from '@reown/appkit-adapter-ethers';
-
-const PROJECT_ID = 'f018499b1e4a94d961ab67aeeeff3254';
-const CONTRACTS = { 968: { sn: '0x1AcfE0b24632294DC6947fc0508F8217134a55D7' } };
-const SN_ABI = ['function totalParents() view returns (uint256)','function parentAt(uint256) view returns (string)','function parentOwner(string) view returns (address)','function resolve(string,string) view returns (address)','function claimParent(string) payable','function transferParent(string,address)','function issue(string,string,address)','function revoke(string,string)'];
-const $ = (id) => document.getElementById(id);
-let currentChainId = 968, account = null;
-
-const appkit = createAppKit({
-  adapters: [new EthersAdapter()],
-  networks: [{ id: 677, name: 'BOT Mainnet', nativeCurrency: { name: 'BOT', symbol: 'BOT', decimals: 18 }, rpcUrls: { default: { http: ['https://rpc.botchain.ai'] } } }, { id: 968, name: 'BOT Testnet', nativeCurrency: { name: 'BOT', symbol: 'BOT', decimals: 18 }, rpcUrls: { default: { http: ['https://rpc.bohr.life'] } } }],
-  projectId: PROJECT_ID,
-  features: { analytics: false },
-});
-async function getSigner() {
-  if (typeof appkit !== 'undefined' && appkit && typeof appkit.getWalletProvider === 'function') {
-    const wp = appkit.getWalletProvider('eip155') || appkit.getWalletProvider();
-    if (wp) return await new ethers.BrowserProvider(wp).getSigner();
-  }
-  throw new Error('Connect a wallet first');
-}
-function short(a) { return !a || a === ethers.ZeroAddress ? '—' : a.slice(0, 6) + '…' + a.slice(-4); }
-function msg(id, t, ok) {
-  const el = $(id); el.style.display = 'block';
-  el.style.color = ok === false ? 'var(--danger)' : 'var(--acc2)';
-  el.textContent = t;
-}
-async function provider() {
-  return new ethers.JsonRpcProvider(currentChainId === 968 ? 'https://rpc.bohr.life' : 'https://rpc.botchain.ai');
-}
-async function snRead() {
-  const c = CONTRACTS[currentChainId];
-  if (!c) return null;
-  return new ethers.Contract(c.sn, SN_ABI, await provider());
-}
-async function refresh() {
-  const t = await snRead();
-  if (!t) { $('parList').innerHTML = '<div class="hint">Mainnet not deployed yet — testnet for now.</div>'; $('tParents').textContent = '—'; return; }
-  const n = Number(await t.totalParents());
-  $('tParents').textContent = n;
-  if (account) {
-    try { $('tBal').textContent = Number(ethers.formatEther(await (await provider()).getBalance(account))).toFixed(4) + ' BOT'; } catch (e) {}
-  }
-  const me = (account || '').toLowerCase();
-  let html = '';
-  for (let i = 0; i < n; i++) {
-    const p = await t.parentAt(i);
-    const o = await t.parentOwner(p);
-    const mine = me && o.toLowerCase() === me;
-    html += '<div class="nm"><b>' + p + '</b> · <span class="mono">' + short(o) + '</span>'
-      + (mine ? ' <button class="btn btn-g btn-sm" data-act="transfer" data-p="' + p + '">Transfer</button>' : '') + '</div>';
-  }
-  $('parList').innerHTML = html || '<div class="hint">No parents yet — claim the first one →</div>';
-}
-async function write(fn, args, value, okMsg, msgId) {
-  try {
-    const s = await getSigner();
-    const t = new ethers.Contract(CONTRACTS[currentChainId].sn, SN_ABI, s);
-    const tx = value !== undefined ? await t[fn](...args, { value }) : await t[fn](...args);
-    msg(msgId || 'cMsg', 'Sent: ' + tx.hash.slice(0, 18) + '… waiting…');
-    await tx.wait();
-    msg(msgId || 'cMsg', okMsg || 'Confirmed ✓');
-    await refresh();
-  } catch (e) {
-    msg(msgId || 'cMsg', 'Failed: ' + (e.shortMessage || e.reason || e.message || e).toString().slice(0, 160), false);
-  }
-}
-$('resolveBtn').addEventListener('click', async () => {
-  const v = $('rSub').value.trim();
-  const parts = v.split('.');
-  if (parts.length !== 2 || !parts[0] || !parts[1]) { $('rOut').textContent = 'Format: sub.parent'; return; }
-  const t = await snRead(); if (!t) return;
-  const holder = await t.resolve(parts[1], parts[0]);
-  $('rOut').textContent = holder === ethers.ZeroAddress ? v + ' → unregistered' : v + ' → ' + holder;
-});
-$('claimBtn').addEventListener('click', async () => {
-  const p = $('cParent').value.trim().toLowerCase();
-  if (!p || p.length > 32) { msg('cMsg', 'Label required (max 32 chars).', false); return; }
-  await write('claimParent', [p], ethers.parseEther('0.005'), 'Parent claimed ✓ now issue subs.');
-});
-$('issueBtn').addEventListener('click', async () => {
-  const p = $('iParent').value.trim().toLowerCase(), s = $('iSub').value.trim().toLowerCase(), h = $('iHolder').value.trim();
-  if (!p || !s || !/^0x[0-9a-fA-F]{40}$/.test(h)) { msg('iMsg', 'Parent + sub + valid holder required.', false); return; }
-  await write('issue', [p, s, h], undefined, 'Sub issued ✓', 'iMsg');
-});
-$('parList').addEventListener('click', async (e) => {
-  const b = e.target.closest('[data-act]'); if (!b) return;
-  const to = prompt('Transfer parent "' + b.dataset.p + '" to address:');
-  if (!to || !/^0x[0-9a-fA-F]{40}$/.test(to.trim())) return;
-  await write('transferParent', [b.dataset.p, to.trim()], undefined, 'Transferred ✓', 'cMsg');
-});
-if ($('connectBtn')) {
-  appkit.subscribeAccount((a) => {
-    account = a.address || null;
-    $('connectBtn').textContent = account ? account.slice(0, 6) + '…' + account.slice(-4) : 'Connect wallet';
-    refresh();
-  });
-  appkit.subscribeNetwork((n) => {
-    if (n && n.chainId) { currentChainId = Number(n.chainId); const s = $('netSel'); if (s) s.value = String(currentChainId); }
-    refresh();
-  });
-  $('connectBtn').addEventListener('click', () => appkit.open());
-  if ($('netSel')) $('netSel').addEventListener('change', (e) => {
-    const id = Number(e.target.value);
-    try { appkit.switchNetwork({ id }); } catch (err) {}
-    currentChainId = id;
-    refresh();
-  });
-}
-refresh();
-setInterval(() => { if (!document.hidden) refresh(); }, 25000);
+const PROJECT_ID='f018499b1e4a94d961ab67aeeeff3254';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],tok=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim(),fmt=(n,d=0)=>Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+let _t;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(_t);_t=setTimeout(()=>t.classList.remove('on'),2600)}
+function count(el,to,d=0){const f=+el.dataset.v||0;el.dataset.v=to;const t0=performance.now();(function s(t){const k=Math.min(1,(t-t0)/700);el.textContent=fmt(f+(to-f)*k,d);if(k<1)requestAnimationFrame(s)})(t0)}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});$$('.rv').forEach(e=>io.observe(e));
+const NETS={677:{rpc:'https://rpc.botchain.ai'},968:{rpc:'https://rpc.bohr.life'}};
+const CA={677:null,968:'0x1AcfE0b24632294DC6947fc0508F8217134a55D7'};
+const ABI=['function PARENT_FEE() view returns (uint256)','function totalParents() view returns (uint256)','function parentAt(uint256) view returns (string)','function parentOwner(string) view returns (address)','function resolve(string,string) view returns (address)','function claimParent(string) payable','function transferParent(string,address)','function issue(string,string,address)','function revoke(string,string)'];
+let currentChainId=968,account=null,P=[],fee=ethers.parseEther('0.005');
+const appkit=createAppKit({adapters:[new EthersAdapter()],networks:[{id:968,name:'BOT Testnet',nativeCurrency:{name:'BOT',symbol:'BOT',decimals:18},rpcUrls:{default:{http:[NETS[968].rpc]}}},{id:677,name:'BOT Mainnet',nativeCurrency:{name:'BOT',symbol:'BOT',decimals:18},rpcUrls:{default:{http:[NETS[677].rpc]}}}],projectId:PROJECT_ID,features:{analytics:false}});
+async function getSigner(){if(typeof appkit!=='undefined'&&appkit&&typeof appkit.getWalletProvider==='function'){const wp=appkit.getWalletProvider('eip155')||appkit.getWalletProvider();if(wp)return await new ethers.BrowserProvider(wp).getSigner()}throw new Error('Connect a wallet first')}
+function provider(){return new ethers.JsonRpcProvider(NETS[currentChainId].rpc)}
+function read(){return CA[currentChainId]?new ethers.Contract(CA[currentChainId],ABI,provider()):null}
+async function write(fn,args,value){if(!CA[currentChainId])throw new Error('Not deployed on mainnet yet — switch to Testnet 968');const s=await getSigner();const c=new ethers.Contract(CA[currentChainId],ABI,s);return value!==undefined?await c[fn](...args,{value}):await c[fn](...args)}
+const T='Claim a parent label for 0.005 BOT, then issue unlimited subnames under it: dev.alice, pay.alice, anything. Transfer parents, revoke subs, resolve on-chain. Standalone v1 — BotNames linkage is the upgrade path.';
+let ti=0;(function ty(){$('#rd').textContent=T.slice(0,ti);if(ti++<=T.length)setTimeout(ty,18)})();
+async function refresh(){const t=read();if(!t){P=[];return ui()}try{fee=await t.PARENT_FEE();const n=Number(await t.totalParents());const list=[];for(let i=0;i<n;i++){const l=await t.parentAt(i);const o=await t.parentOwner(l);list.push({l,o})}P=list}catch(e){}}
+const short=a=>!a?'—':a.slice(0,6)+'…'+a.slice(-4);
+const isMine=p=>account&&p.o.toLowerCase()===account.toLowerCase();
+function ui(){$('#k1').textContent=P.length;if(account)provider().getBalance(account).then(b=>{$('#k2').textContent=fmt(+ethers.formatEther(b),4)});else $('#k2').textContent='—';
+$('#tr').innerHTML=P.map((p,i)=>`<div class="pl"><span><span class="nm">${p.l}</span> <span class="ow">owner ${isMine(p)?'you':short(p.o)}</span></span><span>${isMine(p)?`<button data-t="${i}">transfer →</button>`:''}</span></div>`).join('')||'<span style="color:var(--mut)">No parents claimed yet — claim the first one</span>';
+const mine=P.filter(isMine);$('#ip').innerHTML=mine.length?mine.map((p,i)=>`<option value="${p.l}">${p.l}</option>`).join(''):'<option value="">(no parents yet)</option>'}
+async function run(fn,args,value,ok){try{toast('Sending…');const tx=await write(fn,args,value);toast('Sent '+tx.hash.slice(0,14)+'…');await tx.wait();toast(ok);await refresh();ui()}catch(e){toast('Failed: '+(e.shortMessage||e.message||e).toString().slice(0,140))}}
+$('#tr').onclick=async e=>{const b=e.target.closest('button[data-t]');if(!b)return;const p=P[+b.dataset.t];const to=prompt('New owner address for "'+p.l+'":');if(!to)return;if(!/^0x[0-9a-fA-F]{40}$/.test(to.trim()))return toast('Address must be 0x…');await run('transferParent',[p.l,to.trim()],undefined,'Parent transferred. Its subnames follow.')};
+$('#rb').onclick=async()=>{const v=$('#rs').value.trim().toLowerCase().split('.'),o=$('#ro');if(!CA[currentChainId])return o.textContent='Not deployed on mainnet yet — switch to Testnet 968.';o.textContent='Resolving…';try{const t=read();if(v.length===1){const own=await t.parentOwner(v[0]);o.textContent=own===ethers.ZeroAddress?v[0]+' is not claimed.':v[0]+' → owner '+(isMine({o:own})?'you':short(own))}else if(v.length===2){const h=await t.resolve(v[1],v[0]);if(h===ethers.ZeroAddress){const own=await t.parentOwner(v[1]);o.textContent=v.join('.')+' not found'+(own!==ethers.ZeroAddress?' (parent '+v[1]+' exists)':'')+'.'}else{const own=await t.parentOwner(v[1]);o.innerHTML=v.join('.')+' → '+h+'<br>parent owner '+(isMine({o:own})?'you':short(own))}}else o.textContent='Use sub.parent (one or two labels).'}catch(e){o.textContent='Resolve failed: '+(e.shortMessage||e.message||e).toString().slice(0,120)}};
+$('#cb').onclick=()=>{const l=$('#cl').value.trim().toLowerCase();if(!/^[a-z0-9-]{1,32}$/.test(l))return toast('Use 1–32 chars: a–z 0–9 and -');if(P.some(p=>p.l===l))return toast(l+' is already claimed');run('claimParent',[l],fee,'Claimed '+l+'. Its subnames are yours to issue.')};
+$('#ib').onclick=()=>{const par=$('#ip').value,s=$('#is').value.trim().toLowerCase(),h=$('#ih').value.trim();if(!par)return toast('Claim a parent first');if(!/^[a-z0-9-]{1,32}$/.test(s)||!/^0x[0-9a-fA-F]{40}$/.test(h))return toast('Add a sub label and a holder 0x…');run('issue',[par,s,h],undefined,'Issued '+s+'.'+par+' for free')};
+$('#rb2').onclick=()=>{const par=$('#ip').value,s=$('#is').value.trim().toLowerCase();if(!par||!s)return toast('Pick a parent and type the sub');run('revoke',[par,s],undefined,'Revoked '+s+'.'+par)};
+$$('.net button').forEach((b,i)=>b.onclick=async()=>{const id=i===0?968:677;try{await appkit.switchNetwork({id})}catch(e){}currentChainId=id;$$('.net button').forEach(x=>x.classList.toggle('on',x===b));toast('Switched to '+b.textContent);await refresh();ui()});
+$('#w').onclick=()=>appkit.open();
+appkit.subscribeAccount(a=>{account=a.address||null;$('#w').textContent=account?account.slice(0,6)+'…'+account.slice(-4):'Connect wallet';refresh().then(ui)});
+appkit.subscribeNetwork(n=>{if(n&&n.chainId){currentChainId=Number(n.chainId);$$('.net button').forEach((x,i)=>x.classList.toggle('on',(i===0&&currentChainId===968)||(i===1&&currentChainId===677)));refresh().then(ui)}});
+refresh().then(ui);setInterval(()=>{if(!document.hidden)refresh().then(ui)},25000);
 </script>
-</body>
-</html>
+</body></html>
